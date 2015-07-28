@@ -844,12 +844,20 @@ NSString *dzn_implementationKey(id target, SEL selector)
     [views setObject:self forKey:@"self"];
     [views setObject:self.contentView forKey:@"contentView"];
     
-    [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:[self]-(<=0)-[contentView]"
-                                                                 options:NSLayoutFormatAlignAllCenterY metrics:nil views:views]];
-    
-    [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:[self]-(<=0)-[contentView]"
-                                                                 options:NSLayoutFormatAlignAllCenterX metrics:nil views:views]];
-    
+    if (_customView) {
+        [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|[contentView]|"
+                                                                     options:NSLayoutFormatAlignAllCenterY metrics:nil views:views]];
+        
+        [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|[contentView]|"
+                                                                     options:NSLayoutFormatAlignAllCenterX metrics:nil views:views]];
+    }
+    else {
+        [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:[self]-(<=0)-[contentView]"
+                                                                     options:NSLayoutFormatAlignAllCenterY metrics:nil views:views]];
+        
+        [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:[self]-(<=0)-[contentView]"
+                                                                     options:NSLayoutFormatAlignAllCenterX metrics:nil views:views]];
+    }
     // If a custom offset is available, we modify the contentView's constraints constants
     if (!CGPointEqualToPoint(self.offset, CGPointZero) && self.constraints.count == 4) {
         NSLayoutConstraint *vConstraint = self.constraints[1];
